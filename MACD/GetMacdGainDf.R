@@ -1,4 +1,4 @@
-getMacdGainDf = function(df, maLow, maHigh, signalma, drawPlot, symbolName) {
+getMacdGainDf = function(df, maLow, maHigh, signalma, drawPlot, comId) {
   dfGain = data.frame()
   
   for (i in maLow) {
@@ -21,13 +21,13 @@ getMacdGainDf = function(df, maLow, maHigh, signalma, drawPlot, symbolName) {
     }
   }
   
-  names(dfGain) = c('i', 'j', 'k', 'Gain', 'Gain(%)', 'LastClose - FirstClose', 'LastClose - FirstClose (%)', 'No. of Trades')
+  names(dfGain) = c('i', 'j', 'k', 'Gain', 'GainPercent', 'TotalGain', 'TotalGainPercent', 'TradeNo')
   
   bg = getBestGain(100, dfGain)
   
-  bg = cbind(symbolName, bg)
+  bg = cbind(comId, bg)
   
-  colnames(bg)[which(names(bg) == "symbolName")] <- "Symbol Name"
+  #colnames(bg)[which(names(bg) == "symbolName")] <- "Symbol Name"
   
   return(bg)
 }

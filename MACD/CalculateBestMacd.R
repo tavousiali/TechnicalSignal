@@ -20,7 +20,7 @@ getMacdGainDf(tail(Noavaran.Symbols.KHSAPA, 500), maLow, maHigh, signalma, T, 'S
 bestMACDGainForAllSymbol = function() {
   stockDF = data.frame()
   #for (i in 1:nrow(Noavaran.Companies)) {
-  for (i in 1:4) {
+  for (i in 1:10) {
     symbolName = Noavaran.Companies$Com_Symbol[i]
     
     stringSymbolName = paste("Noavaran.Symbols.", symbolName, sep = "")
