@@ -15,11 +15,12 @@ truncateTable = function() {
     PWD = "@shahin9814",
     #rstudioapi::askForPassword(""),
     Port = 1433,
-    encoding = 'UTF-8')
+    encoding = 'UTF-8'
+  )
   
   dbSendQuery(
     con,
-    "IF EXISTS (SELECT TOP 1 ([Com_ID]) FROM [FinancialAnalysisDB].[DIT].[Tbl18_TechnicalSignalMACD]) 
+    "IF EXISTS (SELECT TOP 1 ([Com_ID]) FROM [FinancialAnalysisDB].[DIT].[Tbl18_TechnicalSignalMACD])
     DELETE [FinancialAnalysisDB].[DIT].[Tbl18_TechnicalSignalMACD]"
   )
 }
@@ -35,9 +36,9 @@ CalculateBestMACDForAllCompany = function(deleteOldData) {
   if (deleteOldData) {
     truncateTable()
   }
-
+  
   foreach (i = 1:nrow(Noavaran.Companies)) %dopar% {
-  #foreach (i = 1:2) %dopar% {
+  #foreach (i = 95:105) %dopar% {
     preRequired = function() {
       library(NoavaranIndicators, lib = "C:/Program Files/R/R-3.5.2/library")
       library(NoavaranSymbols, lib = "C:/Program Files/R/R-3.5.2/library")
@@ -60,7 +61,8 @@ CalculateBestMACDForAllCompany = function(deleteOldData) {
         PWD = "@shahin9814",
         #rstudioapi::askForPassword(""),
         Port = 1433,
-        encoding = 'UTF-8')
+        encoding = 'UTF-8'
+      )
       
       dbSendQuery(
         con,
@@ -112,14 +114,23 @@ CalculateBestMACDForAllCompany = function(deleteOldData) {
       maLow = 1:18
       maHigh = 15:52
       signalma = 3:33
-      bg = getMacdGainDf(tail(thisSymbolDataframe, 500), maLow, maHigh, signalma, F, comId)
+      bg = getMacdGainDf(tail(thisSymbolDataframe, 500),
+                         maLow,
+                         maHigh,
+                         signalma,
+                         F,
+                         comId)
       return(bg)
     }
     runInThread = function(i) {
       preRequired()
       bg = getCompanyAndCalcBestGain(i)
-      
-      insertIntoDB(bg)
+      # bg = data.frame()
+      # bg = rbind(bg, c(i,1,2,3,4,5,6,7,8))
+      # names(bg) = c('comId', 'i', 'j', 'k', 'Gain', 'GainPercent', 'TotalGain', 'TotalGainPercent', 'TradeNo')
+      if (!is.null(bg)) {
+        insertIntoDB(bg)
+      }
     }
     
     runInThread(i)
