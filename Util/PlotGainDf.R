@@ -4,7 +4,7 @@ plotGainDf = function(df) {
               theme(legend.position = "top"))
   
   # Initiate a ggplot
-  b <- ggplot(df, aes(x = df$`No. of Trades`, y = df$Gain))
+  b <- ggplot(df, aes(x = df$TradeNo, y = df$Gain))
   
   # Basic scatter plot
   b + geom_point()

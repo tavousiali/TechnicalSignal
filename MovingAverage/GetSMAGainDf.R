@@ -1,4 +1,4 @@
-getSMAGainDf = function(df, smaMinMaxLow, smaMinMaxHigh, drawPlot, symbolName) {
+getSMAGainDf = function(df, smaMinMaxLow, smaMinMaxHigh, drawPlot, comId) {
   dfGain = data.frame()
   maxOfSmaMinMaxLow = max(smaMinMaxLow)
   
@@ -50,7 +50,7 @@ getSMAGainDf = function(df, smaMinMaxLow, smaMinMaxHigh, drawPlot, symbolName) {
       }
     }
     
-    names(dfGain) = c('i', 'j', 'Gain', 'Gain(%)', 'LastClose - FirstClose', 'LastClose - FirstClose (%)', 'No. of Trades')
+    names(dfGain) = c('i', 'j', 'Gain', 'GainPercent', 'TotalGain', 'TotalGainPercent', 'TradeNo')
     
     #TODO
     #باید بررسی شود که چرا رسم چارت کار نمیکند
@@ -60,9 +60,9 @@ getSMAGainDf = function(df, smaMinMaxLow, smaMinMaxHigh, drawPlot, symbolName) {
     
     bg = getBestGain(100, dfGain)
     
-    bg = cbind(symbolName, bg)
+    bg = cbind(comId, bg)
     
-    colnames(bg)[which(names(bg) == "symbolName")] <- "Symbol Name"
+    #colnames(bg)[which(names(bg) == "comId")] <- "comId"
     
     return(bg)
   }

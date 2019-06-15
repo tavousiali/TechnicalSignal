@@ -1,6 +1,6 @@
-detach("package:NoavaranSymbols", unload = TRUE)
+#detach("package:NoavaranSymbols", unload = TRUE)
+library(NoavaranIndicators, lib = "C:/Program Files/R/R-3.5.2/library")
 library(NoavaranSymbols, lib = "C:/Program Files/R/R-3.5.2/library")
-library(NoavaranIndicators)
 library(TTR)
 source("Util/CalculateGain.R")
 source("Util/TimeOfExecution.R")
@@ -8,7 +8,7 @@ source("Util/PlotGainDf.R")
 source("Util/GetBestGain.R")
 source("MovingAverage/GetSMAGainDf.R")
 
-#timeOfExecution(getSMAGainDf, tail(Noavaran.Symbols.REMAPNA, 500), 5:30, 31:90, T, 'REMAPNA')
+timeOfExecution(getSMAGainDf, tail(Noavaran.Symbols.REMAPNA, 500), 5:30, 31:90, T, 'REMAPNA')
 
 getSMAGainDf(tail(Noavaran.Symbols.FEOLAD, 500), 5:30, 31:90, T, 'Symbol')
 plotGainDf(G)
@@ -28,8 +28,8 @@ plotGainDf(G)
 
 bestGainForAllSymbol = function() {
   stockDF = data.frame()
-  for (i in 1:nrow(Noavaran.Companies)) {
-    #for (i in 1:1) {
+  #for (i in 1:nrow(Noavaran.Companies)) {
+  for (i in 1:3) {
     symbolName = Noavaran.Companies$Com_Symbol[i]
     
     stringSymbolName = paste("Noavaran.Symbols.", symbolName, sep = "")
