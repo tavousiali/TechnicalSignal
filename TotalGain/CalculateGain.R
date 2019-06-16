@@ -3,6 +3,6 @@ calculateGain = function(firstDayClose, lastDayClose) {
   gainFirstLastPercent = (gainFirstLast / firstDayClose) * 100
   return(c(
     gainFirstLast,
-    gainFirstLastPercent,
+    gainFirstLastPercent
   ))
 }
