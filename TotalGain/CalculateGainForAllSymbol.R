@@ -47,7 +47,9 @@ CalculateGainForAllSymbol = function(deleteOldData) {
     if (!is.null(thisSymbolDataframe)) {
       bg = getTotalGainDf(tail(thisSymbolDataframe, 500), comId)
       
-      stockDF = rbind(stockDF, bg)
+      if (!is.null(bg)) {
+        stockDF = rbind(stockDF, bg)
+      }
     }
   }
   
@@ -70,10 +72,12 @@ CalculateGainForAllSymbol = function(deleteOldData) {
   table_id <-
     Id(schema = "DIT", table = "Tbl18_TechnicalSignalTotalGain")
   
-  dbWriteTable(conn = con,
-               name = table_id,
-               value = stockDF,
-               append = TRUE)
+  dbWriteTable(
+    conn = con,
+    name = table_id,
+    value = stockDF,
+    append = TRUE
+  )
 }
 
 timeOfExecution(CalculateGainForAllSymbol, T)

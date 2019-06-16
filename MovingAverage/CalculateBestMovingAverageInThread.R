@@ -15,12 +15,13 @@ truncateTable = function() {
     PWD = "@shahin9814",
     #rstudioapi::askForPassword(""),
     Port = 1433,
-    encoding = 'UTF-8')
+    encoding = 'UTF-8'
+  )
   
   dbSendQuery(
     con,
-    "IF EXISTS (SELECT TOP 1 ([Com_ID]) FROM [FinancialAnalysisDB].[DIT].[Tbl18_TechnicalSignalSMA]) 
-     DELETE [FinancialAnalysisDB].[DIT].[Tbl18_TechnicalSignalSMA]"
+    "IF EXISTS (SELECT TOP 1 ([Com_ID]) FROM [FinancialAnalysisDB].[DIT].[Tbl18_TechnicalSignalSMA])
+    DELETE [FinancialAnalysisDB].[DIT].[Tbl18_TechnicalSignalSMA]"
   )
 }
 
@@ -37,7 +38,7 @@ CalculateBestMovingAverageForAllCompany = function(deleteOldData) {
   }
   
   foreach (i = 1:nrow(Noavaran.Companies)) %dopar% {
-  #foreach (i = 1:2) %dopar% {
+    #foreach (i = 127:127) %dopar% {
     preRequired = function() {
       library(NoavaranIndicators, lib = "C:/Program Files/R/R-3.5.2/library")
       library(NoavaranSymbols, lib = "C:/Program Files/R/R-3.5.2/library")
@@ -60,38 +61,33 @@ CalculateBestMovingAverageForAllCompany = function(deleteOldData) {
         PWD = "@shahin9814",
         #rstudioapi::askForPassword(""),
         Port = 1433,
-        encoding = 'UTF-8')
-        
+        encoding = 'UTF-8'
+      )
+      
       dbSendQuery(
         con,
         paste0(
           "INSERT INTO [FinancialAnalysisDB].DIT.[Tbl18_TechnicalSignalSMA]
-      (Com_ID,
-      i,
-      j,
-      Gain,
-      GainPercent,
-      TotalGain,
-      TotalGainPercent,
-      TradeNo) VALUES (",
+          (Com_ID,
+          i,
+          j,
+          Gain,
+          GainPercent,
+          TradeNo) VALUES (",
           bg$comId,
           ',',
-          bg$i,
+          ifelse(!is.null(bg$i), bg$i, 'NULL') ,
           ',',
-          bg$j,
+          ifelse(!is.null(bg$j), bg$j, 'NULL') ,
           ',',
-          bg$Gain,
+          ifelse(!is.null(bg$Gain), bg$Gain, 'NULL') ,
           ',',
-          bg$GainPercent,
+          ifelse(!is.null(bg$GainPercent), bg$GainPercent, 'NULL') ,
           ',',
-          bg$TotalGain,
-          ',',
-          bg$TotalGainPercent,
-          ',',
-          bg$TradeNo,
+          ifelse(!is.null(bg$TradeNo), bg$TradeNo, 'NULL') ,
           ")"
+          )
         )
-      )
     }
     getCompanyAndCalcBestGain = function(i) {
       symbolName = Noavaran.Companies$Com_Symbol[i]
@@ -109,14 +105,15 @@ CalculateBestMovingAverageForAllCompany = function(deleteOldData) {
       bg = getSMAGainDf(tail(thisSymbolDataframe, 500),
                         1:30,
                         31:90,
-                        F,
-                        comId)
+                        F)
+      
+      bg = data.frame(cbind(comId, bg))
+      
       return(bg)
     }
     runInThread = function(i) {
       preRequired()
       bg = getCompanyAndCalcBestGain(i)
-      
       insertIntoDB(bg)
     }
     

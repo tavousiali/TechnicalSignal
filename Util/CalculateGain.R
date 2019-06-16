@@ -37,13 +37,9 @@ calculateGain = function(df, firstDayClose, lastDayClose) {
   
   gain = gain - (buySellNo * wageRate / 100)
   gainPercent = (gain / firstDayClose) * 100
-  gainFirstLast = lastDayClose - firstDayClose
-  gainFirstLastPercent = (gainFirstLast / firstDayClose) * 100
   return(c(
     gain,
     gainPercent,
-    gainFirstLast,
-    gainFirstLastPercent,
     buySellNo
   ))
 }
