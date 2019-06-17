@@ -38,7 +38,7 @@ CalculateBestMACDForAllCompany = function(deleteOldData) {
   }
   
   foreach (i = 1:nrow(Noavaran.Companies)) %dopar% {
-  #foreach (i = 95:105) %dopar% {
+  #foreach (i = 1:10) %dopar% {
     preRequired = function() {
       library(NoavaranIndicators, lib = "C:/Program Files/R/R-3.5.2/library")
       library(NoavaranSymbols, lib = "C:/Program Files/R/R-3.5.2/library")
@@ -74,26 +74,20 @@ CalculateBestMACDForAllCompany = function(deleteOldData) {
           k,
           Gain,
           GainPercent,
-          TotalGain,
-          TotalGainPercent,
           TradeNo) VALUES (",
           bg$comId,
           ',',
-          bg$i,
+          ifelse(!is.null(bg$i), bg$i, 'NULL') ,
           ',',
-          bg$j,
+          ifelse(!is.null(bg$j), bg$j, 'NULL') ,
           ',',
-          bg$k,
+          ifelse(!is.null(bg$k), bg$k, 'NULL') ,
           ',',
-          bg$Gain,
+          ifelse(!is.null(bg$Gain), bg$Gain, 'NULL') ,
           ',',
-          bg$GainPercent,
+          ifelse(!is.null(bg$GainPercent), bg$GainPercent, 'NULL') ,
           ',',
-          bg$TotalGain,
-          ',',
-          bg$TotalGainPercent,
-          ',',
-          bg$TradeNo,
+          ifelse(!is.null(bg$TradeNo), bg$TradeNo, 'NULL') ,
           ")"
           )
         )
@@ -118,19 +112,17 @@ CalculateBestMACDForAllCompany = function(deleteOldData) {
                          maLow,
                          maHigh,
                          signalma,
-                         F,
-                         comId)
+                         F)
+      bg = data.frame(cbind(comId, bg))
+      
       return(bg)
     }
     runInThread = function(i) {
       preRequired()
+      
       bg = getCompanyAndCalcBestGain(i)
-      # bg = data.frame()
-      # bg = rbind(bg, c(i,1,2,3,4,5,6,7,8))
-      # names(bg) = c('comId', 'i', 'j', 'k', 'Gain', 'GainPercent', 'TotalGain', 'TotalGainPercent', 'TradeNo')
-      if (!is.null(bg)) {
-        insertIntoDB(bg)
-      }
+      
+      insertIntoDB(bg)
     }
     
     runInThread(i)
@@ -138,3 +130,5 @@ CalculateBestMACDForAllCompany = function(deleteOldData) {
 }
 
 timeOfExecution(CalculateBestMACDForAllCompany, T)
+
+CalculateBestMACDForAllCompany(T)
