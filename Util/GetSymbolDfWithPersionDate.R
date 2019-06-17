@@ -4,4 +4,6 @@ GetSymbolDfWithPersionDate = function(df) {
   calendar$Date = as.Date(calendar$Date)
   
   res = inner_join(df, calendar, by = c("Date"="Date"))
+  
+  return(res)
 }
