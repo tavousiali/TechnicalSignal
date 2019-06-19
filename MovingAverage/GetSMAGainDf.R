@@ -5,7 +5,7 @@ getSMAGainDf = function(df,
   dfGain = data.frame()
   maxOfSmaMinMaxLow = max(smaMinMaxLow)
   
-  if (maxOfSmaMinMaxLow <= nrow(df)) {
+  #if (maxOfSmaMinMaxLow <= nrow(df)) {
     #maxOfSmaMinMaxHigh = max(smaMinMaxHigh)
     maxOfSmaMinMaxHigh = min(max(smaMinMaxHigh), nrow(df))
     
@@ -24,8 +24,7 @@ getSMAGainDf = function(df,
     }
     
     for (i in smaMinMaxLow) {
-      if (i <= maxOfSmaMinMaxLow) {
-        for (j in smaMinMaxHigh) {
+      for (j in smaMinMaxHigh) {
           if (j <= maxOfSmaMinMaxHigh & j > i) {
             diff = df[paste0('sma_', i)] - df[paste0('sma_', j)]
             diffYesterday = rbind(NA, head(diff ,-1))
@@ -58,7 +57,6 @@ getSMAGainDf = function(df,
             
           }
         }
-      }
     }
     
     names(dfGain) = c('i',
@@ -75,8 +73,11 @@ getSMAGainDf = function(df,
     
     bg = getBestGain(100, dfGain)
     
-    #colnames(bg)[which(names(bg) == "comId")] <- "comId"
+    if (bg$TradeNo == 0) {
+      bg$i = 0
+      bg$j = 0
+    }
     
     return(bg)
-  }
+  #}
 }

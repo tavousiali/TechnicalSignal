@@ -52,4 +52,4 @@ View(df4)
 #Plot
 p<-ggplot(data=data.frame(df4$Com_Nemad, df4$GainDiff), aes(x=df4$Com_Nemad, y=df4$GainDiff)) +
   geom_bar(stat="identity")
-GetSymbolDfWithPersionDate(tail(Noavaran.Symbols.VAPOST, 500))
+p
