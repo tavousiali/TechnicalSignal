@@ -31,17 +31,22 @@ getSMAGainDf = function(df,
             positiveSignal = diffYesterday < 0 & diff > 0
             negativeSignal = diffYesterday > 0 & diff < 0
             close = df$Close
+            #date = df$Date
             
             df2 = cbind(diff,
                         diffYesterday,
                         positiveSignal,
                         negativeSignal,
-                        close)
+                        close
+                        #,date
+                        )
             colnames(df2) = c('diff',
                               'diffYesterday',
                               'positiveSignal',
                               'negativeSignal',
-                              'Close')
+                              'Close'
+                              #,'Date'
+                              )
             
             result = df2[!is.na(df2$diffYesterday) &
                            ((df2$positiveSignal == T) |
@@ -72,12 +77,12 @@ getSMAGainDf = function(df,
     # }
     
     bg = getBestGain(100, dfGain)
-    
+
     if (bg$TradeNo == 0) {
       bg$i = 0
       bg$j = 0
     }
-    
+
     return(bg)
   #}
 }

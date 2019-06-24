@@ -10,7 +10,8 @@ CalculateBestMovingAverageForAllCompany = function() {
   registerDoParallel(numCores)
   now = Sys.time()
   #stockDf = foreach (i = 600:nrow(Noavaran.Companies), .combine = rbind) %dopar% {
-  stockDf = foreach (i = 550:555, .combine = rbind) %dopar% {
+  stockDf = data.frame()
+  stockDf = foreach (i = 1:2, .combine = rbind) %dopar% {
     
     #------ Initial ------
     library(NoavaranIndicators, lib = "C:/Program Files/R/R-3.5.2/library")
@@ -39,7 +40,7 @@ CalculateBestMovingAverageForAllCompany = function() {
                       1:90,
                       F)
     
-    bg = data.frame(cbind(comId, bg, now))
+    stockDf = rbind(stockDf, cbind(comId, bg, now))
   }
   
   stockDf = data.frame(stockDf)
@@ -76,4 +77,4 @@ CalculateBestMovingAverageForAllCompany = function() {
 }
 
 timeOfExecution(CalculateBestMovingAverageForAllCompany)
-
+CalculateBestMovingAverageForAllCompany()
