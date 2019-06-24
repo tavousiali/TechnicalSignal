@@ -1,4 +1,4 @@
-GetLastTradeDate = function() {
+GetLastTradeDateAndClose = function() {
   
   stockDF = data.frame()
   for (i in 1:nrow(Noavaran.Companies)) {
@@ -14,12 +14,14 @@ GetLastTradeDate = function() {
     
     if (!is.null(thisSymbolDataframe)) {
       comId = Noavaran.Companies$Com_ID[i]
-      stockDF = rbind(stockDF, data.frame(comId, tail(thisSymbolDataframe,1)$Date))
+      lastDay = tail(thisSymbolDataframe,1)
+      stockDF = rbind(stockDF, data.frame(comId, lastDay$Date, lastDay$Close))
     }
   }
 
   names(stockDF) = c('Com_ID',
-                     'LastTradeDate')
+                     'LastTradeDate',
+                     'Close')
   
   return(stockDF)
 }

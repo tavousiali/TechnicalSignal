@@ -1,6 +1,3 @@
-library(DBI)
-library(odbc)
-
 getFf_Fpsd_Sc = function() {
   con <- dbConnect(
     odbc(),
@@ -19,14 +16,14 @@ getFf_Fpsd_Sc = function() {
     "DECLARE @date dDate
     SELECT @date = MAX(ComSH_Date) FROM [DIT].Tbl05_CompanyShareHolder
     
-    SELECT S1.Com_ID,S1.ComMI_FirstPublicSupplyDate, S2.ComC_ShareCount, S3.Com_FreeFloat FROM (
-    SELECT Q1.Com_ID, Q1.ComMI_FirstPublicSupplyDate  FROM DIT.Tbl02_CompanyMarketItem Q1
+    SELECT S1.Com_ID, S1.Com_EntityType,S1.ComMI_FirstPublicSupplyDate, S2.ComC_ShareCount, S3.Com_FreeFloat FROM (
+    SELECT Q1.Com_ID, Q2.Com_EntityType, Q1.ComMI_FirstPublicSupplyDate  FROM DIT.Tbl02_CompanyMarketItem Q1
     INNER JOIN
     (
-    SELECT C.Com_ID, MIN(ComMI_FirstPublicSupplyDate) AS MINFirstPublicSupplyDate FROM DIT.Tbl02_CompanyMarketItem CMI WITH (NOLOCK)
+    SELECT C.Com_ID, MIN(ComMI_FirstPublicSupplyDate) AS MINFirstPublicSupplyDate, Com_EntityType FROM DIT.Tbl02_CompanyMarketItem CMI WITH (NOLOCK)
     INNER JOIN dit.Tbl02_Company C ON C.Com_ID = CMI.Com_ID
     WHERE Com_EntityType IN (1,2,16) AND ComMI_EntityType IN (1,2,16)
-    GROUP BY C.Com_ID
+    GROUP BY C.Com_ID, Com_EntityType
     ) Q2 ON Q2.Com_ID = Q1.Com_ID AND Q2.MINFirstPublicSupplyDate = Q1.ComMI_FirstPublicSupplyDate
     WHERE Q1.ComMI_EntityType IN (1,2,16)
     ) S1

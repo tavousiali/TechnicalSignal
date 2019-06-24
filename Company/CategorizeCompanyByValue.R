@@ -1,9 +1,3 @@
-library(DBI)
-library(odbc)
-library(NoavaranIndicators, lib = "C:/Program Files/R/R-3.5.2/library")
-library(NoavaranSymbols, lib = "C:/Program Files/R/R-3.5.2/library")
-source("Util/TimeOfExecution.R")
-
 CategorizeCompanyByValue = function() {
   
   ValueThreshold = c(10 ^ 8, 10 ^ 9, 10 ^ 10, 10 ^ 11)

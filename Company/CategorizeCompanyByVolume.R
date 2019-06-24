@@ -1,9 +1,3 @@
-library(DBI)
-library(odbc)
-library(NoavaranIndicators, lib = "C:/Program Files/R/R-3.5.2/library")
-library(NoavaranSymbols, lib = "C:/Program Files/R/R-3.5.2/library")
-source("Util/TimeOfExecution.R")
-
 CategorizeCompanyByVolume = function() {
   
   volumeThreshold = c(10 ^ 5, 10 ^ 6, 10 ^ 7, 10 ^ 8)
