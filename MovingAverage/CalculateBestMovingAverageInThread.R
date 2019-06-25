@@ -9,7 +9,7 @@ CalculateBestMovingAverageForAllCompany = function() {
   numCores <- detectCores()
   registerDoParallel(numCores)
   now = Sys.time()
-  stockDf = foreach (i = 601:nrow(Noavaran.Companies), .combine = rbind) %dopar% {
+  stockDf = foreach (i = 1:nrow(Noavaran.Companies), .combine = rbind) %dopar% {
   #stockDf = foreach (i = 600:616, .combine = rbind) %dopar% {
     
     #------ Initial ------
