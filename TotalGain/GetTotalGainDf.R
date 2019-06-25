@@ -1,4 +1,10 @@
 getTotalGainDf = function(df, comId) {
+  if (is.null(df)) {
+    return()
+  }
+  if (nrow(df) == 0) {
+    return()
+  }
   dfGain = data.frame()
   gainResult = calculateGain(head(df$Close, 1), tail(df$Close, 1))
   dfGain = rbind(dfGain,

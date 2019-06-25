@@ -41,7 +41,7 @@ c$ComC_ShareCount = as.numeric(c$ComC_ShareCount)
 c$CompanyMarketValue = as.numeric(c$CompanyMarketValue)
 
 # مرتب سازی ها
-c = c[order(-c$CompanyMarketValue),] # مرتب ساری بر اساس مارکت ولیو
+#c = c[order(-c$CompanyMarketValue),] # مرتب ساری بر اساس مارکت ولیو
 #c = c[order(-c$ComC_ShareCount),] # مرتب ساری بر اساس تعداد سهم
 #c = c[order(-c$ValueScale),] # مرتب ساری بر اساس بزرگی ارزش معاملات
 #c = c[order(-c$VolumeScale),] # مرتب ساری بر اساس بزرگی حجم معاملات
@@ -50,12 +50,16 @@ c = c[order(-c$CompanyMarketValue),] # مرتب ساری بر اساس مارک�
 
 #c = c[c$ValueScale > 3,] #سهم های بزرگ
 #c = c[c$LastTradeDate == max(c$LastTradeDate),] #سهم هایی که امروز معامله شده اند
-c = c[c$Com_EntityType == 1,] #سهم های بورسی
+c = c[c$Com_EntityType != 16,] #سهم های بورسی
 
 #تبدیل به اعداد خوانا
 c$ComC_ShareCount = prettyNum(c$ComC_ShareCount,big.mark=",",scientific=FALSE)
 c$CompanyMarketValue = prettyNum(c$CompanyMarketValue,big.mark=",",scientific=FALSE)
 
 rownames(c) = NULL
+
+df1$Com_ID <- as.numeric(df1$Com_ID)
+c = inner_join(c, df1)
+c = c[order(-(c$GainPercent - c$TotalGainPercent)),] # مرتب ساری بر اساس اختلاف گین میانگین متحرک و گین کلی
 View(c)
 

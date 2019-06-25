@@ -6,14 +6,11 @@ con <- dbConnect(odbc(), Driver = "SQL Server", Server = "EAGLE30",
 
 result = dbGetQuery(con, "SELECT c.Com_ID, c.Com_Nemad, c.Com_BourseSymbol, c.Com_EntityType,
                     sma.i, sma.j, sma.Gain,sma.GainPercent, sma.TradeNo,
-                    macd.i, macd.j, macd.k, macd.Gain, macd.GainPercent, macd.TradeNo,
-                    tg.TotalGain, tg.TotalGainPercent,
-                    ccv.Type
+                    tg.TotalGain, tg.TotalGainPercent
                     FROM DIT.Tbl02_Company c
                     INNER JOIN DIT.Tbl18_TechnicalSignalSMA sma ON sma.Com_ID = c.Com_ID
-                    INNER JOIN DIT.Tbl18_TechnicalSignalMACD macd ON macd.Com_ID = c.Com_ID
                     INNER JOIN DIT.Tbl18_TechnicalSignalTotalGain tg ON  tg.Com_ID = c.Com_ID
-                    INNER JOIN DIT.Tbl18_TechnicalSignal_CompanyCategoryByVolume ccv ON ccv.Com_ID = c.Com_ID")
+                    ")
 
 #1.
 #مرتب سازی بر اساس تعداد معامله

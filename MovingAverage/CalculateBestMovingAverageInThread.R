@@ -9,8 +9,8 @@ CalculateBestMovingAverageForAllCompany = function() {
   numCores <- detectCores()
   registerDoParallel(numCores)
   now = Sys.time()
-  stockDf = foreach (i = 1:nrow(Noavaran.Companies), .combine = rbind) %dopar% {
-  #stockDf = foreach (i = 600:616, .combine = rbind) %dopar% {
+  #stockDf = foreach (i = 1:nrow(Noavaran.Companies), .combine = rbind) %dopar% {
+  stockDf = foreach (i = 1:10, .combine = rbind) %dopar% {
     
     #------ Initial ------
     library(NoavaranIndicators, lib = "C:/Program Files/R/R-3.5.2/library")
@@ -22,6 +22,7 @@ CalculateBestMovingAverageForAllCompany = function() {
     source("MovingAverage/GetSMAGainDf.R")
     
     #------ Calculate ------
+    
     symbolName = Noavaran.Companies$Com_Symbol[i]
     
     stringSymbolName = paste("Noavaran.Symbols.", symbolName, sep = "")
@@ -56,7 +57,7 @@ CalculateBestMovingAverageForAllCompany = function() {
                        'DateTime')
   }
 
-  browser()
+  #browser()
   con <- dbConnect(
     odbc(),
     Driver = "SQL Server",

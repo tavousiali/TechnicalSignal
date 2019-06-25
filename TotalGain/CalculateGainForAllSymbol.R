@@ -6,32 +6,32 @@ source("TotalGain/CalculateGain.R")
 source("TotalGain/GetTotalGainDf.R")
 source("Util/TimeOfExecution.R")
 
-truncateTable = function() {
-  library(DBI)
-  library(odbc)
-  con <- dbConnect(
-    odbc(),
-    Driver = "SQL Server",
-    Server = "EAGLE30",
-    Database = "FinancialAnalysisDB",
-    UID = "dit",
-    PWD = "@shahin9814",
-    #rstudioapi::askForPassword(""),
-    Port = 1433,
-    encoding = 'UTF-8'
-  )
-  
-  dbSendQuery(
-    con,
-    "IF EXISTS (SELECT TOP 1 ([Com_ID]) FROM [FinancialAnalysisDB].[DIT].[Tbl18_TechnicalSignalTotalGain])
-    DELETE [FinancialAnalysisDB].[DIT].[Tbl18_TechnicalSignalTotalGain]"
-  )
-}
+# truncateTable = function() {
+#   library(DBI)
+#   library(odbc)
+#   con <- dbConnect(
+#     odbc(),
+#     Driver = "SQL Server",
+#     Server = "EAGLE30",
+#     Database = "FinancialAnalysisDB",
+#     UID = "dit",
+#     PWD = "@shahin9814",
+#     #rstudioapi::askForPassword(""),
+#     Port = 1433,
+#     encoding = 'UTF-8'
+#   )
+#   
+#   dbSendQuery(
+#     con,
+#     "IF EXISTS (SELECT TOP 1 ([Com_ID]) FROM [FinancialAnalysisDB].[DIT].[Tbl18_TechnicalSignalTotalGain])
+#     DELETE [FinancialAnalysisDB].[DIT].[Tbl18_TechnicalSignalTotalGain]"
+#   )
+# }
 
 CalculateGainForAllSymbol = function(deleteOldData) {
   stockDF = data.frame()
   for (i in 1:nrow(Noavaran.Companies)) {
-    #for (i in 1:20) {
+  #for (i in 1:200) {
     symbolName = Noavaran.Companies$Com_Symbol[i]
     
     stringSymbolName = paste("Noavaran.Symbols.", symbolName, sep = "")
@@ -45,7 +45,7 @@ CalculateGainForAllSymbol = function(deleteOldData) {
     comId = Noavaran.Companies$Com_ID[i]
     
     if (!is.null(thisSymbolDataframe)) {
-      bg = getTotalGainDf(tail(thisSymbolDataframe, 500), comId)
+      bg = getTotalGainDf(thisSymbolDataframe[thisSymbolDataframe$Date > '2017-03-21', ], comId)
       
       if (!is.null(bg)) {
         stockDF = rbind(stockDF, bg)
@@ -65,9 +65,9 @@ CalculateGainForAllSymbol = function(deleteOldData) {
     encoding = 'UTF-8'
   )
   
-  if (deleteOldData) {
-    truncateTable()
-  }
+  # if (deleteOldData) {
+  #   truncateTable()
+  # }
   
   table_id <-
     Id(schema = "DIT", table = "Tbl18_TechnicalSignalTotalGain")
@@ -80,4 +80,4 @@ CalculateGainForAllSymbol = function(deleteOldData) {
   )
 }
 
-timeOfExecution(CalculateGainForAllSymbol, T)
+timeOfExecution(CalculateGainForAllSymbol)

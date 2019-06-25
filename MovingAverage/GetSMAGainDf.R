@@ -16,50 +16,53 @@ getSMAGainDf = function(df,
   #maxOfSmaMinMaxHigh = max(smaMinMaxHigh)
   maxOfSmaMinMaxHigh = min(max(smaMinMaxHigh), nrow(df))
   
-  for (i in smaMinMaxLow) {
-    sma = Noavaran.Indicator.SMA(df, i)
-    if (!is.null(sma)) {
-      df[[paste0('sma_', i)]] = sma
-    }
-  }
-  
-  for (i in smaMinMaxHigh) {
-    sma = Noavaran.Indicator.SMA(df, i)
-    if (!is.null(sma)) {
-      df[[paste0('sma_', i)]] = sma
-    }
-  }
+  # for (i in smaMinMaxLow) {
+  #   sma = Noavaran.Indicator.SMA(df, i)
+  #   if (!is.null(sma)) {
+  #     df[[paste0('sma_', i)]] = sma
+  #   }
+  # }
+  #
+  # for (i in smaMinMaxHigh) {
+  #   sma = Noavaran.Indicator.SMA(df, i)
+  #   if (!is.null(sma)) {
+  #     df[[paste0('sma_', i)]] = sma
+  #   }
+  # }
+  #
   
   for (i in smaMinMaxLow) {
     for (j in smaMinMaxHigh) {
       if (j <= maxOfSmaMinMaxHigh & j > i) {
-        diff = df[paste0('sma_', i)] - df[paste0('sma_', j)]
-        diffYesterday = rbind(NA, head(diff , -1))
+        #browser()
+        # #diff = df[paste0('sma_', i)] - df[paste0('sma_', j)]
+        diff = Noavaran.Indicator.SMA(df, i) - Noavaran.Indicator.SMA(df, j)
+        diffYesterday = c(NA, head(diff ,-1))
         positiveSignal = diffYesterday < 0 & diff > 0
         negativeSignal = diffYesterday > 0 & diff < 0
         close = df$Close
         date = df$Date
+        # 
         
         df2 = cbind(diff,
                     diffYesterday,
                     positiveSignal,
                     negativeSignal,
-                    close
-                    ,
+                    close,
                     date)
         colnames(df2) = c(
           'diff',
           'diffYesterday',
           'positiveSignal',
           'negativeSignal',
-          'Close'
-          ,
+          'Close',
           'Date'
         )
+        df2 = data.frame(df2)
         
         result = df2[!is.na(df2$diffYesterday) &
                        ((df2$positiveSignal == T) |
-                          df2$negativeSignal == T) , ]
+                          df2$negativeSignal == T) ,]
         
         firstDay = head(df2, 1)
         lastDay = tail(df2, 1)
@@ -99,7 +102,7 @@ getSMAGainDf = function(df,
   }
   
   return(bg)
-  #}
+  
 }
 
 addFisrtAndLastCloseDayIfRequired = function(result, firstDay, lastDay) {
