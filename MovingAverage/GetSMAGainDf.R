@@ -31,28 +31,33 @@ getSMAGainDf = function(df,
             positiveSignal = diffYesterday < 0 & diff > 0
             negativeSignal = diffYesterday > 0 & diff < 0
             close = df$Close
-            #date = df$Date
+            date = df$Date
             
             df2 = cbind(diff,
                         diffYesterday,
                         positiveSignal,
                         negativeSignal,
                         close
-                        #,date
+                        ,date
                         )
             colnames(df2) = c('diff',
                               'diffYesterday',
                               'positiveSignal',
                               'negativeSignal',
                               'Close'
-                              #,'Date'
+                              ,'Date'
                               )
             
             result = df2[!is.na(df2$diffYesterday) &
                            ((df2$positiveSignal == T) |
                               df2$negativeSignal == T) ,]
             
-            gainResult = calculateGain(result, head(df$Close, 1), tail(df$Close, 1))
+            firstDay = head(df2, 1)
+            lastDay = tail(df2, 1)
+            #browser()
+            result = addFisrtAndLastCloseDayIfRequired(result, firstDay, lastDay)
+            
+            gainResult = calculateGain(result, firstDay$Close, lastDay$Close)
             dfGain = rbind(dfGain,
                            c(i,
                              j,
@@ -76,7 +81,8 @@ getSMAGainDf = function(df,
     #   plotGainDf(dfGain)
     # }
     
-    bg = getBestGain(100, dfGain)
+    # bg = result
+    bg = getBestGain(10, dfGain)
 
     if (bg$TradeNo == 0) {
       bg$i = 0
@@ -85,4 +91,47 @@ getSMAGainDf = function(df,
 
     return(bg)
   #}
+}
+
+addFisrtAndLastCloseDayIfRequired = function(result, firstDay, lastDay) {
+  if (nrow(result) > 0) {
+    if (head(result, 1)$negativeSignal) {
+      v = data.frame(diff = 0,
+                     diffYesterday = 0,
+                     positiveSignal = T,
+                     negativeSignal = F,
+                     Close=firstDay$Close,
+                     Date=firstDay$Date)
+      
+      result = rbind(v, result)
+    }
+    
+    if (tail(result, 1)$positiveSignal) {
+      v = data.frame(diff = 0,
+                     diffYesterday = 0,
+                     positiveSignal = F,
+                     negativeSignal = T,
+                     Close = lastDay$Close,
+                     Date=lastDay$Date)
+      
+      result = rbind(result, v)
+    }
+  } else {
+    f = data.frame(diff = 0,
+                   diffYesterday = 0,
+                   positiveSignal = T,
+                   negativeSignal = F,
+                   Close=firstDay$Close)
+    
+    l = data.frame(diff = 0,
+                   diffYesterday = 0,
+                   positiveSignal = F,
+                   negativeSignal = T,
+                   Close = lastDay$Close)
+    
+    result = rbind(result, f)
+    result = rbind(result, l)
+  }
+  
+  return(result)
 }

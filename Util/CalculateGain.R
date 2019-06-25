@@ -29,10 +29,10 @@ calculateGain = function(df, firstDayClose, lastDayClose) {
       }
     }
     
-    if (row$positiveSignal) {
-      gain = gain + (lastDayClose - row$Close)
-      buySellNo = buySellNo + 1
-    }
+    # if (row$positiveSignal) {
+    #   gain = gain + (lastDayClose - row$Close)
+    #   buySellNo = buySellNo + 1
+    # }
   }
   
   gain = gain - (buySellNo * wageRate / 100)

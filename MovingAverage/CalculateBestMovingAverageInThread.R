@@ -77,4 +77,3 @@ CalculateBestMovingAverageForAllCompany = function() {
 }
 
 timeOfExecution(CalculateBestMovingAverageForAllCompany)
-CalculateBestMovingAverageForAllCompany()
