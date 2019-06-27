@@ -43,6 +43,9 @@ getSMAGainDf = function(df,
         
         result = addFisrtAndLastCloseDayIfRequired(result, firstDay, lastDay)
         
+        #حذف روزهایی که دوبار پشت سر هم سیگنال صادر میشود
+        result = result[result$positiveSignal != c(F, head(result$positiveSignal, -1)),]
+        
         gainResult = calculateGain(result, firstDay$Close, lastDay$Close)
         dfGain = rbind(dfGain,
                        c(i,

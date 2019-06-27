@@ -1,4 +1,4 @@
-getSMAGainDfLowPerformanceHighVisually = function(df,
+getSMAGainDf = function(df,
                         smaMinMaxLow,
                         smaMinMaxHigh,
                         drawPlot) {
@@ -35,8 +35,8 @@ getSMAGainDfLowPerformanceHighVisually = function(df,
       if (j <= maxOfSmaMinMaxHigh & j > i) {
         diff = df[paste0('sma_', i)] - df[paste0('sma_', j)]
         diffYesterday = rbind(NA, head(diff , -1))
-        positiveSignal = diffYesterday < 0 & diff > 0
-        negativeSignal = diffYesterday > 0 & diff < 0
+        positiveSignal = diffYesterday <= 0 & diff >= 0
+        negativeSignal = diffYesterday >= 0 & diff <= 0
         close = df$Close
         date = df$Date
         
@@ -64,6 +64,9 @@ getSMAGainDfLowPerformanceHighVisually = function(df,
         
         result = addFisrtAndLastCloseDayIfRequired(result, firstDay, lastDay)
         
+        #حذف روزهایی که دوبار پشت سر هم سیگنال فروش صادر میشود
+        result = result[result$positiveSignal != c(F, head(result$positiveSignal, -1)),]
+        
         gainResult = calculateGain(result, firstDay$Close, lastDay$Close)
         dfGain = rbind(dfGain,
                        c(i,
@@ -90,7 +93,7 @@ getSMAGainDfLowPerformanceHighVisually = function(df,
   
   # bg = result
   bg = getBestGain(10, dfGain)
-  
+
   if (bg$TradeNo == 0) {
     bg$i = 0
     bg$j = 0
@@ -133,7 +136,8 @@ addFisrtAndLastCloseDayIfRequired = function(result, firstDay, lastDay) {
       diffYesterday = 0,
       positiveSignal = T,
       negativeSignal = F,
-      Close = firstDay$Close
+      Close = firstDay$Close,
+      Date = firstDay$Date
     )
     
     l = data.frame(
@@ -141,7 +145,8 @@ addFisrtAndLastCloseDayIfRequired = function(result, firstDay, lastDay) {
       diffYesterday = 0,
       positiveSignal = F,
       negativeSignal = T,
-      Close = lastDay$Close
+      Close = lastDay$Close,
+      Date = lastDay$Date
     )
     
     result = rbind(result, f)

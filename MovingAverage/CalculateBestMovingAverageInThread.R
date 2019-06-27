@@ -25,6 +25,7 @@ CalculateBestMovingAverageForAllCompany = function() {
     #------ Calculate ------
     symbolName = Noavaran.Companies$Com_Symbol[i]
     
+    symbolName = "KEBAFGH"
     stringSymbolName = paste("Noavaran.Symbols.", symbolName, sep = "")
     
     thisSymbolDataframe = tryCatch({
