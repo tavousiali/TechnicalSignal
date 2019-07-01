@@ -4,14 +4,23 @@ con <- dbConnect(odbc(), Driver = "SQL Server", Server = "EAGLE30",
                  Database = "FinancialAnalysisDB", UID = "dit", PWD = "@shahin9814", 
                  Port = 1433, encoding = "UTF-8")
 
-result = dbGetQuery(con, "SELECT Q1.Com_ID, c.Com_Nemad, c.Com_BourseSymbol, c.Com_EntityType, Q1.i Q1i, Q2.i Q2i,Q1.j Q1j,Q2.j Q2j,Q1.GainPercent Q1GP,Q2.GainPercent Q2GP, Q2.GainPercent - Q1.GainPercent AS Diff FROM
-                          (SELECT * FROM [FinancialAnalysisDB].[DIT].[Tbl18_TechnicalSignalSMA] 
-                          WHERE DateTime = '2019-06-26 13:47:33.000') Q1
-                          INNER JOIN 
-                          (SELECT * FROM [FinancialAnalysisDB].[DIT].[Tbl18_TechnicalSignalSMA] 
-                          WHERE DateTime = '2019-06-26 12:30:36.000') Q2 ON Q2.Com_ID = Q1.Com_ID
-                          INNER JOIN DIT.Tbl02_Company c ON c.Com_ID = Q1.Com_ID
-                          ORDER BY Diff DESC
+result = dbGetQuery(con, "SELECT Q1.Com_ID, c.Com_Nemad, c.Com_BourseSymbol, c.Com_EntityType, 
+	   Q1.i Q1i, Q2.i Q2i, Q3.i Q3i,Q1.j Q1j,Q2.j Q2j,Q3.j Q3j,
+                    Q1.GainPercent Q1GP,Q2.GainPercent Q2GP,Q3.GainPercent Q3GP, 
+                    Q2.GainPercent - Q1.GainPercent AS Q2Q1Diff,
+                    Q3.GainPercent - Q2.GainPercent AS Q3Q2Diff,
+                    Q3.GainPercent - Q1.GainPercent AS Q3Q1Diff
+                    FROM
+                    (SELECT * FROM [FinancialAnalysisDB].[DIT].[Tbl18_TechnicalSignalSMA] 
+                    WHERE cal_id = 14) Q1
+                    INNER JOIN 
+                    (SELECT * FROM [FinancialAnalysisDB].[DIT].[Tbl18_TechnicalSignalSMA] 
+                    WHERE cal_id = 15) Q2 ON Q2.Com_ID = Q1.Com_ID
+                    INNER JOIN 
+                    (SELECT * FROM [FinancialAnalysisDB].[DIT].[Tbl18_TechnicalSignalSMA] 
+                    WHERE cal_id = 17) Q3 ON Q3.Com_ID = Q1.Com_ID
+                    INNER JOIN DIT.Tbl02_Company c ON c.Com_ID = Q1.Com_ID
+                    ORDER BY c.Com_ID
                           
 
                     ")

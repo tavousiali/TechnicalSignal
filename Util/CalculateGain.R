@@ -1,7 +1,8 @@
+source("Settings.R")
 calculateGain = function(df, firstDayClose, lastDayClose) {
   gain = 0
   buySellNo = 0
-  wageRate = 1.5
+  wageRate = settings.wageRate
   
   rowCount = nrow(df)
   if (rowCount > 0) {
