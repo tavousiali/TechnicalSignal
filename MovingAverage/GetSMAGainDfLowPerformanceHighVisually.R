@@ -55,6 +55,8 @@ getSMAGainDf = function(df,
           'Date'
         )
         
+        df2 = tail(df2, nrow(df2) - max(settings.sma.smaMinMaxHigh)) #df2[df2$Date > settings.sma.smaFromTo[1],]
+        
         result = df2[!is.na(df2$diffYesterday) &
                        ((df2$positiveSignal == T) |
                           df2$negativeSignal == T) , ]
@@ -92,7 +94,7 @@ getSMAGainDf = function(df,
   # }
   
   # bg = result
-  bg = getBestGain(10, dfGain)
+  bg = getBestGain(settings.maxTradeNo, dfGain)
 
   if (bg$TradeNo == 0) {
     bg$i = 0

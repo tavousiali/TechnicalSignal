@@ -33,6 +33,8 @@ getSMAGainDf = function(df,
           # ,'Date' = date
         )
         
+        df2 = tail(df2, nrow(df2) - max(settings.sma.smaMinMaxHigh)) #df2[df2$Date > settings.sma.smaFromTo[1],]
+        
         result = df2[!is.na(df2$positiveSignal) &
                        !is.na(df2$negativeSignal) &
                        ((df2$positiveSignal == T) |

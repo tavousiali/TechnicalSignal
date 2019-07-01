@@ -6,11 +6,32 @@ CalculateBestMovingAverageForAllCompany = function() {
   library(doParallel)
   library(DBI)
   library(odbc)
+  source("Util/ConvertToUTF.R")
+  source("Util/ConnectionString.R")
+  source("Settings.R")
   numCores <- detectCores()
   registerDoParallel(numCores)
-  now = Sys.time()
-  stockDf = foreach (i = 1:nrow(Noavaran.Companies), .combine = rbind) %dopar% {
-  #stockDf = foreach (i = 1:13, .combine = rbind) %dopar% {
+  
+  #ثبت تاریخ در دیتابیس
+  calculationTableId = Id(schema = "DIT", table = "Tbl18_TechnicalSignal_CalculationDate")
+  val = data.frame(Cal_Date = Sys.time(), 
+                   Cal_Description = c('SMA-1:200-31:200-CHEFIBER'), 
+                   stringsAsFactors=FALSE)
+  val$Cal_Description = ConvertToUTF16(ConvertToUTF8(val$Cal_Description))
+  
+  dbWriteTable(
+    conn = con,
+    name = calculationTableId,
+    value = val,
+    append = TRUE
+  )
+  
+  lastCalc = dbReadTable(con, calculationTableId)
+  lastCalcId = tail(lastCalc$Cal_ID, 1)
+  ############
+  
+  #stockDf = foreach (i = 1:nrow(Noavaran.Companies), .combine = rbind) %dopar% {
+  stockDf = foreach (i = 1:1, .combine = rbind) %dopar% {
     
     #------ Initial ------
     library(NoavaranIndicators, lib = "C:/Program Files/R/R-3.5.2/library")
@@ -25,7 +46,7 @@ CalculateBestMovingAverageForAllCompany = function() {
     #------ Calculate ------
     symbolName = Noavaran.Companies$Com_Symbol[i]
     
-    symbolName = "KEBAFGH"
+    #symbolName = "CHEFIBER"
     stringSymbolName = paste("Noavaran.Symbols.", symbolName, sep = "")
     
     thisSymbolDataframe = tryCatch({
@@ -36,16 +57,19 @@ CalculateBestMovingAverageForAllCompany = function() {
     
     comId = Noavaran.Companies$Com_ID[i]
     
-    bg = getSMAGainDf(thisSymbolDataframe[thisSymbolDataframe$Date > '2017-03-21', ],
-                      1:30,
-                      31:90,
+    dfLength = length(which(thisSymbolDataframe$Date > settings.sma.smaFromTo[1])) + max(settings.sma.smaMinMaxHigh)
+    df = tail(thisSymbolDataframe, dfLength)
+    bg = getSMAGainDf(df,
+                      settings.sma.smaMinMaxLow,
+                      settings.sma.smaMinMaxHigh,
                       F)
     
     if (!is.null(bg)) {
-      bg = data.frame(cbind(comId, bg, now))
+      bg = data.frame(cbind(comId, bg, as.data.frame.numeric(lastCalcId)))
     }
   }
   
+  #ثبت میانگین متحرک در دیتابیس
   if (!is.null(stockDf)) {
     stockDf = data.frame(stockDf)
     rownames(stockDf) <- NULL
@@ -55,19 +79,8 @@ CalculateBestMovingAverageForAllCompany = function() {
                        'Gain',
                        'GainPercent',
                        'TradeNo',
-                       'DateTime')
+                       'Cal_ID')
   }
-
-  con <- dbConnect(
-    odbc(),
-    Driver = "SQL Server",
-    Server = "EAGLE30",
-    Database = "FinancialAnalysisDB",
-    UID = "dit",
-    PWD = "@shahin9814",
-    Port = 1433,
-    encoding = 'UTF-8'
-  )
   
   table_id <- Id(schema = "DIT", table = "Tbl18_TechnicalSignalSMA")
   
@@ -77,8 +90,28 @@ CalculateBestMovingAverageForAllCompany = function() {
     value = stockDf,
     append = TRUE
   )
+
+  calculationTableData = dbReadTable(con, calculationTableId)
+  
   
   stopImplicitCluster()
 }
 
 timeOfExecution(CalculateBestMovingAverageForAllCompany)
+
+
+# getCompanyDataFrame(index) {
+#   symbolName = Noavaran.Companies$Com_Symbol[index]
+#   
+#   stringSymbolName = paste("Noavaran.Symbols.", symbolName, sep = "")
+#   
+#   thisSymbolDataframe = tryCatch({
+#     get(stringSymbolName)
+#   }, error = function(e) {
+#     
+#   })
+#   
+#   comId = Noavaran.Companies$Com_ID[index]
+#   
+#   return(list(symbolName, thisSymbolDataframe, comId))
+# }
