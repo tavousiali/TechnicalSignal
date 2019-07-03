@@ -42,8 +42,8 @@ CalculateBestMovingAverageForAllCompany = function() {
       source("Util/CalculateGain.R")
       source("Util/PlotGainDf.R")
       source("Util/GetBestGain.R")
-      #source("MovingAverage/GetSMAGainDf.R")
-      source("MovingAverage/GetSMAGainDfLowPerformanceHighVisually.R")
+      source("MovingAverage/GetSMAGainDf.R")
+      #source("MovingAverage/GetSMAGainDfLowPerformanceHighVisually.R")
       
       #------ Calculate ------
       symbolName = Noavaran.Companies$Com_Symbol[i]
