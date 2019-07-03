@@ -48,7 +48,7 @@ CalculateBestMovingAverageForAllCompany = function() {
       #------ Calculate ------
       symbolName = Noavaran.Companies$Com_Symbol[i]
       
-      symbolName = "NETOUS"
+      #symbolName = "NETOUS"
       stringSymbolName = paste("Noavaran.Symbols.", symbolName, sep = "")
       
       thisSymbolDataframe = tryCatch({
@@ -106,8 +106,8 @@ CalculateBestMovingAverageForAllCompany = function() {
     
     
   })
-  #TODO
-  #dbDisconnect()
+
+  dbDisconnect(con)
   stopImplicitCluster()
 }
 
