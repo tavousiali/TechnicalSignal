@@ -55,7 +55,12 @@ getSMAGainDf = function(df,
           'Date'
         )
         
-        df2 = tail(df2, nrow(df2) - max(settings.sma.smaMinMaxHigh)) #df2[df2$Date > settings.sma.smaFromTo[1],]
+        # خط زیر برای سهم هایی مثل دتهران مشکل درست میشود. زیرا که این سهم در طول بازه دو ساله، فقط سه روز معامله شده است. و پس از افزودن ۹۰ روز، 
+        #فقط ۳۶ روز دیگر به آن اضافه ده و پس از آن باید همین ۳۶ روز از آن کم شود. و نه ۹۰ روز. به همین دلیل اگر بخواهیم از خط زیر استفاده
+        #کنیم، باید آن را تصحیح کرده و آن تعداد روزی که اضافه میشود را کم کنیم.
+        #df2 = tail(df2, nrow(df2) - max(settings.sma.smaMinMaxHigh))
+        #ولی به جای کد بالا،  از کد زیر استفاده میکنیم.
+        df2 = df2[df2$Date > settings.sma.smaFromTo[1],] 
         
         result = df2[!is.na(df2$diffYesterday) &
                        ((df2$positiveSignal == T) |
@@ -87,11 +92,9 @@ getSMAGainDf = function(df,
                     'GainPercent',
                     'TradeNo')
   
-  #TODO
-  # #باید بررسی شود که چرا رسم چارت کار نمیکند
-  # if (drawPlot == T) {
-  #   plotGainDf(dfGain)
-  # }
+  if (drawPlot == T) {
+    plotGainDf(dfGain)
+  }
   
   # bg = result
   bg = getBestGain(settings.maxTradeNo, dfGain)

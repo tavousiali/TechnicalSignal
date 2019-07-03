@@ -1,5 +1,4 @@
 CategorizeCompanyByVolume = function() {
-  
   volumeThreshold = c(10 ^ 5, 10 ^ 6, 10 ^ 7, 10 ^ 8)
   volumeCoefficient = 5
   periodTime = 60
@@ -26,16 +25,19 @@ CategorizeCompanyByVolume = function() {
         tailDf > xm * volumeCoefficient |
           tailDf < xm / volumeCoefficient
       ))])
-      if (m < volumeThreshold[1]) {
-        stockDF = rbind(stockDF, c(comId, m, 1))
-      } else if (m < volumeThreshold[2]) {
-        stockDF = rbind(stockDF, c(comId, m, 2))
-      } else if (m < volumeThreshold[3]) {
-        stockDF = rbind(stockDF, c(comId, m, 3))
-      } else if (m < volumeThreshold[4]) {
-        stockDF = rbind(stockDF, c(comId, m, 4))
-      } else {
-        stockDF = rbind(stockDF, c(comId, m, 5))
+      
+      if (!is.nan(m)) {
+        if (m < volumeThreshold[1]) {
+          stockDF = rbind(stockDF, c(comId, m, 1))
+        } else if (m < volumeThreshold[2]) {
+          stockDF = rbind(stockDF, c(comId, m, 2))
+        } else if (m < volumeThreshold[3]) {
+          stockDF = rbind(stockDF, c(comId, m, 3))
+        } else if (m < volumeThreshold[4]) {
+          stockDF = rbind(stockDF, c(comId, m, 4))
+        } else {
+          stockDF = rbind(stockDF, c(comId, m, 5))
+        }
       }
       
       names(stockDF) = c('Com_ID',

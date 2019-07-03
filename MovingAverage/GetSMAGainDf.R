@@ -2,6 +2,7 @@ getSMAGainDf = function(df,
                         smaMinMaxLow,
                         smaMinMaxHigh,
                         drawPlot) {
+  
   if (is.null(df)) {
     return()
   }
@@ -22,18 +23,23 @@ getSMAGainDf = function(df,
         positiveSignal = diffYesterday <= 0 & diff >= 0
         negativeSignal = diffYesterday >= 0 & diff <= 0
         close = df$Close
-        # date = df$Date
+        date = df$Date
         
         df2 = data.frame(
           # 'diff' = diff,
           # 'diffYesterday' = diffYesterday,
           'positiveSignal' = positiveSignal,
           'negativeSignal' = negativeSignal,
-          'Close' = close
-          # ,'Date' = date
+          'Close' = close,
+          'Date' = date
         )
         
-        df2 = tail(df2, nrow(df2) - max(settings.sma.smaMinMaxHigh)) #df2[df2$Date > settings.sma.smaFromTo[1],]
+        # خط زیر برای سهم هایی مثل دتهران مشکل درست میشود. زیرا که این سهم در طول بازه دو ساله، فقط سه روز معامله شده است. و پس از افزودن ۹۰ روز،
+        #فقط ۳۶ روز دیگر به آن اضافه ده و پس از آن باید همین ۳۶ روز از آن کم شود. و نه ۹۰ روز. به همین دلیل اگر بخواهیم از خط زیر استفاده
+        #کنیم، باید آن را تصحیح کرده و آن تعداد روزی که اضافه میشود را کم کنیم.
+        #df2 = tail(df2, nrow(df2) - max(settings.sma.smaMinMaxHigh))
+        #ولی به جای کد بالا،  از کد زیر استفاده میکنیم.
+        df2 = df2[df2$Date > settings.sma.smaFromTo[1], ]
         
         result = df2[!is.na(df2$positiveSignal) &
                        !is.na(df2$negativeSignal) &
@@ -68,12 +74,12 @@ getSMAGainDf = function(df,
     
     # bg = gainResult
     bg = getBestGain(10, dfGain)
-
+    
     if (bg$TradeNo == 0) {
       bg$i = 0
       bg$j = 0
     }
-
+    
     return(bg)
   }
 }
@@ -86,40 +92,46 @@ addFisrtAndLastCloseDayIfRequired = function(result, firstDay, lastDay) {
           # diff = 0, diffYesterday = 0,
           positiveSignal = T,
           negativeSignal = F,
-          Close = firstDay$Close
-          # ,Date = firstDay$Date
+          Close = firstDay$Close,
+          Date = firstDay$Date
         ),
         result
       )
     }
     
     if (tail(result, 1)$positiveSignal) {
-      result = rbind(result,
-                     data.frame(
-                       # diff = 0, diffYesterday = 0,
-                       positiveSignal = F,
-                       negativeSignal = T,
-                       Close = lastDay$Close
-                       # ,Date = lastDay$Date
-                     ))
+      result = rbind(
+        result,
+        data.frame(
+          # diff = 0, diffYesterday = 0,
+          positiveSignal = F,
+          negativeSignal = T,
+          Close = lastDay$Close,
+          Date = lastDay$Date
+        )
+      )
     }
   } else {
-    result = rbind(result,
-                   data.frame(
-                     # diff = 0, diffYesterday = 0,
-                     positiveSignal = T,
-                     negativeSignal = F,
-                     Close = firstDay$Close
-                     # ,Date = firstDay$Date
-                   ))
-    result = rbind(result,
-                   data.frame(
-                     # diff = 0, diffYesterday = 0,
-                     positiveSignal = F,
-                     negativeSignal = T,
-                     Close = lastDay$Close
-                     # ,Date = lastDay$Date
-                   ))
+    result = rbind(
+      result,
+      data.frame(
+        # diff = 0, diffYesterday = 0,
+        positiveSignal = T,
+        negativeSignal = F,
+        Close = firstDay$Close,
+        Date = firstDay$Date
+      )
+    )
+    result = rbind(
+      result,
+      data.frame(
+        # diff = 0, diffYesterday = 0,
+        positiveSignal = F,
+        negativeSignal = T,
+        Close = lastDay$Close,
+        Date = lastDay$Date
+      )
+    )
   }
   
   return(result)

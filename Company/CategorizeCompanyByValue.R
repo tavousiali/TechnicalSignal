@@ -1,5 +1,4 @@
 CategorizeCompanyByValue = function() {
-  
   ValueThreshold = c(10 ^ 8, 10 ^ 9, 10 ^ 10, 10 ^ 11)
   ValueCoefficient = 5
   periodTime = 60
@@ -26,16 +25,19 @@ CategorizeCompanyByValue = function() {
         tailDf > xm * ValueCoefficient |
           tailDf < xm / ValueCoefficient
       ))])
-      if (m < ValueThreshold[1]) {
-        stockDF = rbind(stockDF, c(comId, m, 1))
-      } else if (m < ValueThreshold[2]) {
-        stockDF = rbind(stockDF, c(comId, m, 2))
-      } else if (m < ValueThreshold[3]) {
-        stockDF = rbind(stockDF, c(comId, m, 3))
-      } else if (m < ValueThreshold[4]) {
-        stockDF = rbind(stockDF, c(comId, m, 4))
-      } else {
-        stockDF = rbind(stockDF, c(comId, m, 5))
+      
+      if (!is.nan(m)) {
+        if (m < ValueThreshold[1]) {
+          stockDF = rbind(stockDF, c(comId, m, 1))
+        } else if (m < ValueThreshold[2]) {
+          stockDF = rbind(stockDF, c(comId, m, 2))
+        } else if (m < ValueThreshold[3]) {
+          stockDF = rbind(stockDF, c(comId, m, 3))
+        } else if (m < ValueThreshold[4]) {
+          stockDF = rbind(stockDF, c(comId, m, 4))
+        } else {
+          stockDF = rbind(stockDF, c(comId, m, 5))
+        }
       }
       
       names(stockDF) = c('Com_ID',
