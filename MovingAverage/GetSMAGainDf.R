@@ -1,8 +1,8 @@
 getSMAGainDf = function(df,
                         smaMinMaxLow,
                         smaMinMaxHigh,
-                        drawPlot) {
-  
+                        drawPlot,
+                        firstPublishSuplyDay) {
   if (is.null(df)) {
     return()
   }
@@ -19,7 +19,7 @@ getSMAGainDf = function(df,
     for (j in smaMinMaxHigh) {
       if (j <= maxOfSmaMinMaxHigh & j > i) {
         diff = Noavaran.Indicator.SMA(df, i) - Noavaran.Indicator.SMA(df, j)
-        diffYesterday = c(NA, head(diff , -1))
+        diffYesterday = c(NA, head(diff ,-1))
         positiveSignal = diffYesterday <= 0 & diff >= 0
         negativeSignal = diffYesterday >= 0 & diff <= 0
         close = df$Close
@@ -39,28 +39,38 @@ getSMAGainDf = function(df,
         #کنیم، باید آن را تصحیح کرده و آن تعداد روزی که اضافه میشود را کم کنیم.
         #df2 = tail(df2, nrow(df2) - max(settings.sma.smaMinMaxHigh))
         #ولی به جای کد بالا،  از کد زیر استفاده میکنیم.
-        df2 = df2[df2$Date > settings.sma.smaFromTo[1], ]
+        df2 = df2[df2$Date > settings.sma.smaFromTo[1],]
         
         result = df2[!is.na(df2$positiveSignal) &
                        !is.na(df2$negativeSignal) &
                        ((df2$positiveSignal == T) |
-                          df2$negativeSignal == T) , ]
+                          df2$negativeSignal == T) ,]
         
         firstDay = head(df2, 1)
         lastDay = tail(df2, 1)
         
-        result = addFisrtAndLastCloseDayIfRequired(result, firstDay, lastDay)
+        result = addFisrtAndLastCloseDayIfRequired(result, firstDay, lastDay, firstPublishSuplyDay)
         
+        #اگر اولین سیگنال، سیگنال فروش بود، از آن صرف نظر میکنیم
+        if (head(result, 1)$negativeSignal) {
+          result = result[-1, ]
+        }
         #حذف روزهایی که دوبار پشت سر هم سیگنال صادر میشود
-        result = result[result$positiveSignal != c(F, head(result$positiveSignal, -1)),]
+        result = result[result$positiveSignal != c(F, head(result$positiveSignal,-1)), ]
+       
+        tryCatch({
+          gainResult = calculateGain(result)
+          dfGain = rbind(dfGain,
+                         c(i,
+                           j,
+                           gainResult[1],
+                           gainResult[2],
+                           gainResult[3]))
+        }, error = function(e) {
+          print(paste0('Error in: DfRows=', nrow(df), ' i=',i, ' j=',j))
+        })
         
-        gainResult = calculateGain(result, firstDay$Close, lastDay$Close)
-        dfGain = rbind(dfGain,
-                       c(i,
-                         j,
-                         gainResult[1],
-                         gainResult[2],
-                         gainResult[3]))
+        
       }
     }
   }
@@ -84,9 +94,12 @@ getSMAGainDf = function(df,
   }
 }
 
-addFisrtAndLastCloseDayIfRequired = function(result, firstDay, lastDay) {
+addFisrtAndLastCloseDayIfRequired = function(result,
+                                             firstDay,
+                                             lastDay,
+                                             firstPublishSuplyDay) {
   if (nrow(result) > 0) {
-    if (head(result, 1)$negativeSignal) {
+    if (as.Date(firstPublishSuplyDay) == firstDay$Date) {
       result = rbind(
         data.frame(
           # diff = 0, diffYesterday = 0,

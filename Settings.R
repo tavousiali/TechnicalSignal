@@ -15,9 +15,9 @@ settings.maxTradeNo = 10
 #از تاریخ تا تاریخ (برای محاسبه میانگین متحرک ها در یک بازه تاریخی)
 settings.sma.smaFromTo = c('2017-03-21', '2019-03-21')
 #بردار میانگین متحرک کوتاه مدت
-settings.sma.smaMinMaxLow = 1:200
+settings.sma.smaMinMaxLow = 1:90
 #بردار میانگین متحرک بلند مدت
-settings.sma.smaMinMaxHigh = 1:200
+settings.sma.smaMinMaxHigh = 1:90
 
 ################
 #مربوط به شرکت ها#

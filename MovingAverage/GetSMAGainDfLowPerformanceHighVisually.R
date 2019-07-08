@@ -1,7 +1,8 @@
 getSMAGainDf = function(df,
                         smaMinMaxLow,
                         smaMinMaxHigh,
-                        drawPlot) {
+                        drawPlot,
+                        firstPublishSuplyDay) {
   if (is.null(df)) {
     return()
   }
@@ -69,12 +70,16 @@ getSMAGainDf = function(df,
         firstDay = head(df2, 1)
         lastDay = tail(df2, 1)
         
-        result = addFisrtAndLastCloseDayIfRequired(result, firstDay, lastDay)
+        result = addFisrtAndLastCloseDayIfRequired(result, firstDay, lastDay, firstPublishSuplyDay)
         
-        #حذف روزهایی که دوبار پشت سر هم سیگنال فروش صادر میشود
-        result = result[result$positiveSignal != c(F, head(result$positiveSignal, -1)),]
+        #اگر اولین سیگنال، سیگنال فروش بود، از آن صرف نظر میکنیم
+        if (head(result, 1)$negativeSignal) {
+          result = result[-1, ]
+        }
+        #حذف روزهایی که دوبار پشت سر هم سیگنال صادر میشود
+        result = result[result$positiveSignal != c(F, head(result$positiveSignal,-1)), ]
         
-        gainResult = calculateGain(result, firstDay$Close, lastDay$Close)
+        gainResult = calculateGain(result)
         dfGain = rbind(dfGain,
                        c(i,
                          j,
@@ -96,7 +101,7 @@ getSMAGainDf = function(df,
     plotGainDf(dfGain)
   }
   
-  # bg = result
+  #bg = result
   bg = getBestGain(settings.maxTradeNo, dfGain)
 
   if (bg$TradeNo == 0) {
@@ -108,9 +113,9 @@ getSMAGainDf = function(df,
   #}
 }
 
-addFisrtAndLastCloseDayIfRequired = function(result, firstDay, lastDay) {
+addFisrtAndLastCloseDayIfRequired = function(result, firstDay, lastDay, firstPublishSuplyDay) {
   if (nrow(result) > 0) {
-    if (head(result, 1)$negativeSignal) {
+    if (as.Date(firstPublishSuplyDay) == firstDay$Date) {
       v = data.frame(
         diff = 0,
         diffYesterday = 0,
