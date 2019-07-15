@@ -25,5 +25,3 @@ GetLastTradeDateAndClose = function() {
   
   return(stockDF)
 }
-
-#View(GetLastTradeDate())

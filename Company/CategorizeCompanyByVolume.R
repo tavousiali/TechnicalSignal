@@ -1,7 +1,7 @@
 CategorizeCompanyByVolume = function() {
-  volumeThreshold = c(10 ^ 5, 10 ^ 6, 10 ^ 7, 10 ^ 8)
-  volumeCoefficient = 5
-  periodTime = 60
+  volumeThreshold = settings.company.volumeThreshold
+  volumeCoefficient = settings.company.volumeCoefficient
+  periodTime = settings.company.volumePeriodTime
   
   stockDF = data.frame()
   for (i in 1:nrow(Noavaran.Companies)) {
@@ -49,6 +49,3 @@ CategorizeCompanyByVolume = function() {
   
   return(stockDF)
 }
-
-# stockdf = CategorizeCompanyByVolume()
-# View(stockdf)

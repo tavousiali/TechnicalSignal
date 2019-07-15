@@ -1,31 +1,32 @@
+source("Util/InstallPackages.R")
+installPackages(c("DBI","odbc","dplyr", "plotly"))
+
 UpdateCompanyDf = function() {
+  source("Settings.R")
+  source("Util/TimeOfExecution.R")
+
   library(DBI)
   library(odbc)
-  library(NoavaranIndicators, lib = "C:/Program Files/R/R-3.5.2/library")
-  library(NoavaranSymbols, lib = "C:/Program Files/R/R-3.5.2/library")
-  source("Util/TimeOfExecution.R")
+  library(NoavaranIndicators, lib = settings.packagePath)
+  library(NoavaranSymbols, lib = settings.packagePath)
   library(dplyr)
   
   source("Company/CategorizeCompanyByValue.R")
   source("Company/CategorizeCompanyByVolume.R")
-  source("Company/FreeFloat-FirstPublicSupplyDate-ShareCount.R")
   source("Company/GetLastTradeDate.R")
   
   companyValueDf = CategorizeCompanyByValue()
   companyVolumeDf = CategorizeCompanyByVolume()
-  ff_fpsd_sc_Df = getFf_Fpsd_Sc()
   lastTradeDate = GetLastTradeDateAndClose()
   
   Noavaran.Companies$Com_ID <- as.numeric(Noavaran.Companies$Com_ID)
   companyValueDf$Com_ID <- as.numeric(companyValueDf$Com_ID)
   companyVolumeDf$Com_ID <- as.numeric(companyVolumeDf$Com_ID)
-  ff_fpsd_sc_Df$Com_ID <- as.numeric(ff_fpsd_sc_Df$Com_ID)
   lastTradeDate$Com_ID <- as.numeric(lastTradeDate$Com_ID)
   
   c = data.frame()
   c = inner_join(Noavaran.Companies, companyValueDf)
   c = inner_join(c, companyVolumeDf)
-  c = inner_join(c, ff_fpsd_sc_Df)
   c = inner_join(c, lastTradeDate)
   return(c)
 }
@@ -33,11 +34,11 @@ UpdateCompanyDf = function() {
 newCompanyDf = UpdateCompanyDf()
 
 c = data.frame()
-c = newCompanyDf[,c('Com_ID','Com_BourseSymbol','ValueAverage', 'ValueScale', 'VolumeAverage', 'VolumeScale', 'ComC_ShareCount', 'Com_FreeFloat', 'Close', 'LastTradeDate', 'Com_EntityType')]
+c = newCompanyDf[,c('Com_ID','Com_BourseSymbol','ValueAverage', 'ValueScale', 'VolumeAverage', 'VolumeScale', 'ShareCount', 'FreeFloat', 'Close', 'LastTradeDate', 'Com_EntityType')]
 
-c$CompanyMarketValue = c$ComC_ShareCount * c$Close
+c$CompanyMarketValue = c$ShareCount * c$Close
 
-c$ComC_ShareCount = as.numeric(c$ComC_ShareCount)
+c$ShareCount = as.numeric(c$ShareCount)
 c$CompanyMarketValue = as.numeric(c$CompanyMarketValue)
 
 # مرتب سازی ها
@@ -50,10 +51,10 @@ c$CompanyMarketValue = as.numeric(c$CompanyMarketValue)
 
 c = c[c$ValueScale > 3,] #سهم های بزرگ
 #c = c[c$LastTradeDate == max(c$LastTradeDate),] #سهم هایی که امروز معامله شده اند
-c = c[c$Com_EntityType != 16,] #سهم های بورسی
+c = c[c$Com_EntityType != 16,] #به غیر از بازار پایه
 
 #تبدیل به اعداد خوانا
-c$ComC_ShareCount = prettyNum(c$ComC_ShareCount,big.mark=",",scientific=FALSE)
+c$ShareCount = prettyNum(c$ShareCount,big.mark=",",scientific=FALSE)
 c$CompanyMarketValue = prettyNum(c$CompanyMarketValue,big.mark=",",scientific=FALSE)
 
 rownames(c) = NULL
@@ -69,8 +70,8 @@ con <- dbConnect(odbc(), Driver = "SQL Server", Server = "EAGLE30",
                  Port = 1433, encoding = "UTF-8")
 
 comIds = paste(as.character(c$Com_ID), collapse=", ")
-CalId1 = 1
-CalId2 = 4
+CalId1 = 2
+CalId2 = 3
 
 result = dbGetQuery(con, paste("
                     

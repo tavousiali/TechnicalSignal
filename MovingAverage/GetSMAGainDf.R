@@ -18,7 +18,8 @@ getSMAGainDf = function(df,
   for (i in smaMinMaxLow) {
     for (j in smaMinMaxHigh) {
       if (j <= maxOfSmaMinMaxHigh & j > i) {
-        diff = Noavaran.Indicator.SMA(df, i) - Noavaran.Indicator.SMA(df, j)
+        #browser()
+        diff = NoavaranIndicators::Indicator.SMA(df, i) - NoavaranIndicators::Indicator.SMA(df, j)
         diffYesterday = c(NA, head(diff ,-1))
         positiveSignal = diffYesterday <= 0 & diff >= 0
         negativeSignal = diffYesterday >= 0 & diff <= 0

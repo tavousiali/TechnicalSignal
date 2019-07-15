@@ -1,7 +1,8 @@
 CategorizeCompanyByValue = function() {
-  ValueThreshold = c(10 ^ 8, 10 ^ 9, 10 ^ 10, 10 ^ 11)
-  ValueCoefficient = 5
-  periodTime = 60
+  source("Settings.R")
+  ValueThreshold = settings.company.valueThreshold
+  ValueCoefficient = settings.company.valueCoefficient
+  periodTime = settings.company.valuePeriodTime
   
   stockDF = data.frame()
   for (i in 1:nrow(Noavaran.Companies)) {
@@ -49,7 +50,3 @@ CategorizeCompanyByValue = function() {
   
   return(stockDF)
 }
-
-# stockdf = CategorizeCompanyByValue()
-# View(stockdf[order(stockdf$ValueAverage),])
-# View(stockdf)
