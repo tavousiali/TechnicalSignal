@@ -5,28 +5,8 @@ library(NoavaranSymbols, lib = "C:/Program Files/R/R-3.5.2/library")
 source("TotalGain/CalculateGain.R")
 source("TotalGain/GetTotalGainDf.R")
 source("Util/TimeOfExecution.R")
-
-# truncateTable = function() {
-#   library(DBI)
-#   library(odbc)
-#   con <- dbConnect(
-#     odbc(),
-#     Driver = "SQL Server",
-#     Server = "EAGLE30",
-#     Database = "FinancialAnalysisDB",
-#     UID = "dit",
-#     PWD = "@shahin9814",
-#     #rstudioapi::askForPassword(""),
-#     Port = 1433,
-#     encoding = 'UTF-8'
-#   )
-#   
-#   dbSendQuery(
-#     con,
-#     "IF EXISTS (SELECT TOP 1 ([Com_ID]) FROM [FinancialAnalysisDB].[DIT].[Tbl18_TechnicalSignalTotalGain])
-#     DELETE [FinancialAnalysisDB].[DIT].[Tbl18_TechnicalSignalTotalGain]"
-#   )
-# }
+source("Util/ConnectionString.R")
+source("Settings.R")
 
 CalculateGainForAllSymbol = function(deleteOldData) {
   stockDF = data.frame()
@@ -44,31 +24,16 @@ CalculateGainForAllSymbol = function(deleteOldData) {
     
     comId = Noavaran.Companies$Com_ID[i]
     
-    if (!is.null(thisSymbolDataframe)) {
-      bg = getTotalGainDf(thisSymbolDataframe[thisSymbolDataframe$Date > '2017-03-21', ], comId)
+    df = thisSymbolDataframe[thisSymbolDataframe$Date > settings.totalGain.totalGainFromTo[1] & thisSymbolDataframe$Date < settings.totalGain.totalGainFromTo[2], ]
+    if (!is.null(df)) {
+      bg = getTotalGainDf(df, comId)
       
       if (!is.null(bg)) {
         stockDF = rbind(stockDF, bg)
       }
     }
   }
-  
-  con <- dbConnect(
-    odbc(),
-    Driver = "SQL Server",
-    Server = "EAGLE30",
-    Database = "FinancialAnalysisDB",
-    UID = "dit",
-    PWD = "@shahin9814",
-    #rstudioapi::askForPassword(""),
-    Port = 1433,
-    encoding = 'UTF-8'
-  )
-  
-  # if (deleteOldData) {
-  #   truncateTable()
-  # }
-  
+
   table_id <-
     Id(schema = "DIT", table = "Tbl18_TechnicalSignalTotalGain")
   

@@ -20,6 +20,13 @@ settings.sma.smaMinMaxLow = 1:200
 settings.sma.smaMinMaxHigh = 1:200
 
 ################
+#مربوط به گین کلی#
+################
+
+#از تاریخ تا تاریخ
+settings.totalGain.totalGainFromTo = c('2017-03-21', '2019-03-21')
+
+################
 #مربوط به شرکت ها#
 ################
 

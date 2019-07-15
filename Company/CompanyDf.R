@@ -65,9 +65,7 @@ rownames(c) = NULL
 
 library(DBI)
 library(odbc)
-con <- dbConnect(odbc(), Driver = "SQL Server", Server = "EAGLE30", 
-                 Database = "FinancialAnalysisDB", UID = "dit", PWD = "@shahin9814", 
-                 Port = 1433, encoding = "UTF-8")
+source("Util/ConnectionString.R")
 
 comIds = paste(as.character(c$Com_ID), collapse=", ")
 CalId1 = 2
