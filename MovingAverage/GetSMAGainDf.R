@@ -58,7 +58,7 @@ getSMAGainDf = function(df,
         }
         #حذف روزهایی که دوبار پشت سر هم سیگنال صادر میشود
         result = result[result$positiveSignal != c(F, head(result$positiveSignal,-1)), ]
-       
+        
         tryCatch({
           gainResult = calculateGain(result)
           dfGain = rbind(dfGain,
@@ -68,7 +68,7 @@ getSMAGainDf = function(df,
                            gainResult[2],
                            gainResult[3]))
         }, error = function(e) {
-          print(paste0('Error in: DfRows=', nrow(df), ' i=',i, ' j=',j))
+          print(paste0('Error in: DfRows=', nrow(df), ' i=', i, ' j=', j))
         })
         
         
@@ -86,11 +86,14 @@ getSMAGainDf = function(df,
     # bg = gainResult
     bg = getBestGain(10, dfGain)
     
-    if (bg$TradeNo == 0) {
-      bg$i = 0
-      bg$j = 0
+    if (!is.null(bg)) {
+      if (nrow(bg) > 0) {
+        if (bg$TradeNo == 0) {
+          bg$i = 0
+          bg$j = 0
+        }
+      }
     }
-    
     return(bg)
   }
 }

@@ -1,5 +1,5 @@
 source("Util/InstallPackages.R")
-installPackages(c("DBI","odbc","dplyr", "plotly"))
+installPackages(settings.usedPackage)
 
 UpdateCompanyDf = function() {
   source("Settings.R")

@@ -18,14 +18,14 @@ getSMAGainDf = function(df,
   maxOfSmaMinMaxHigh = min(max(smaMinMaxHigh), nrow(df))
   
   for (i in smaMinMaxLow) {
-    sma = Noavaran.Indicator.SMA(df, i)
+    sma = NoavaranIndicators::Indicator.SMA(df, i)
     if (!is.null(sma)) {
       df[[paste0('sma_', i)]] = sma
     }
   }
   
   for (i in smaMinMaxHigh) {
-    sma = Noavaran.Indicator.SMA(df, i)
+    sma = NoavaranIndicators::Indicator.SMA(df, i)
     if (!is.null(sma)) {
       df[[paste0('sma_', i)]] = sma
     }

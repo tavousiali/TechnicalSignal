@@ -18,6 +18,8 @@ settings.sma.smaFromTo = c('2017-03-21', '2019-03-21')
 settings.sma.smaMinMaxLow = 1:200
 #بردار میانگین متحرک بلند مدت
 settings.sma.smaMinMaxHigh = 1:200
+#کامنت در جدول تاریخ
+settings.calDescription = 'SMA-1:200-1:200'
 
 ################
 #مربوط به گین کلی#
@@ -46,4 +48,7 @@ settings.company.volumePeriodTime = 60
 ################
 # مسیر پکیج ها
 settings.packagePath = "C:/Program Files/R/R-3.6.1/library"
+
+#پکیج های مورد نیاز
+settings.usedPackage = c("foreach", "doParallel", "DBI", "odbc", "log4r","dplyr", "plotly")
 
