@@ -28,9 +28,9 @@ CompanyExtraDataCalculation = function(fromTo, calDescription) {
     lastTradeDate$Com_ID <- as.numeric(lastTradeDate$Com_ID)
     
     c = data.frame()
-    c = left_join(Noavaran.Companies, companyVolumeDf)
-    c = left_join(c, companyValueDf)
-    c = left_join(c, lastTradeDate)
+    c = inner_join(Noavaran.Companies, companyVolumeDf)
+    c = inner_join(c, companyValueDf)
+    c = inner_join(c, lastTradeDate)
     return(c)
   }
   

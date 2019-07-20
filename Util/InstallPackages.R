@@ -21,3 +21,17 @@ libraryPackage = function() {
   library(dplyr)
   library(plotly)
 }
+
+sourceFile = function() {
+  source("Settings.R")
+  
+  source("TotalGain/CalculateGain.R")
+  source("TotalGain/GetTotalGainDf.R")
+  
+  source("Util/TimeOfExecution.R")
+
+  source("Util/Logger.R")
+  
+  source("Util/ConvertToUTF.R")
+  source("Util/ConnectionString.R")
+}
