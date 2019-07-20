@@ -27,7 +27,7 @@ TotalGainCalculation = function(fromTo, calDescription)
         }
       }
     }
-    browser()
+    
     source("Util/ConnectionString.R")
     dbWithTransaction(con, {
       #ثبت تاریخ در دیتابیس

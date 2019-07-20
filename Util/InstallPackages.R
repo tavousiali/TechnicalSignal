@@ -20,6 +20,9 @@ libraryPackage = function() {
   library(log4r)
   library(dplyr)
   library(plotly)
+  library(TTR)
+  library(NoavaranSymbols, lib.loc = settings.packagePath)
+  library(NoavaranIndicators, lib.loc = settings.packagePath)
 }
 
 sourceFile = function() {
