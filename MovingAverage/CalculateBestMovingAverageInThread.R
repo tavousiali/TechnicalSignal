@@ -41,9 +41,6 @@ MovingAverageCalculation = function(fromTo, smaMinMaxLow, smaMinMaxHigh, calDesc
       stockDf = foreach (i = 1:nrow(Noavaran.Companies), .combine = rbind) %dopar% {
       #stockDf = foreach (i = 1:8, .combine = rbind) %dopar% {
          tryCatch({
-           #TODO
-           #شرکت فنفت هست و باید اس پی های پویا راه اندازی شود
-           #i = 1
            #------ Initial ------
            source("Settings.R")
            source("Util/Logger.R")

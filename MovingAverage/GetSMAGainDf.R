@@ -84,7 +84,7 @@ getSMAGainDf = function(df,
                       'TradeNo')
     
     # bg = gainResult
-    bg = getBestGain(10, dfGain)
+    bg = getBestGain(settings.maxTradeNo, dfGain)
     
     if (!is.null(bg)) {
       if (nrow(bg) > 0) {
