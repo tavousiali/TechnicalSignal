@@ -61,7 +61,7 @@ getSMAGainDf = function(df,
         #کنیم، باید آن را تصحیح کرده و آن تعداد روزی که اضافه میشود را کم کنیم.
         #df2 = tail(df2, nrow(df2) - max(settings.sma.smaMinMaxHigh))
         #ولی به جای کد بالا،  از کد زیر استفاده میکنیم.
-        df2 = df2[df2$Date > settings.sma.smaFromTo[1],] 
+        df2 = df2[df2$Date >= settings.sma.fromTo[1],] 
         
         result = df2[!is.na(df2$diffYesterday) &
                        ((df2$positiveSignal == T) |

@@ -1,7 +1,8 @@
-MovingAverageCalculation = function() {
+MovingAverageCalculation = function(fromTo, smaMinMaxLow, smaMinMaxHigh, calDescription) {
   source("Util/TimeOfExecution.R")
   
-  CalculateBestMovingAverageForAllCompany = function() {
+  CalculateBestMovingAverageForAllCompany = function(fromTo, smaMinMaxLow, smaMinMaxHigh, calDescription) {
+
     source("Settings.R")
 
     library(NoavaranSymbols, lib.loc = settings.packagePath)
@@ -22,7 +23,7 @@ MovingAverageCalculation = function() {
       calculationTableId = Id(schema = "DIT", table = "Tbl18_TechnicalSignal_CalculationDate")
       val = data.frame(
         Cal_Date = Sys.time(),
-        Cal_Description = settings.calDescription,
+        Cal_Description = calDescription,
         stringsAsFactors = FALSE
       )
       val$Cal_Description = ConvertToUTF16(ConvertToUTF8(val$Cal_Description))
@@ -72,20 +73,20 @@ MovingAverageCalculation = function() {
            })
            
            filteredDf = which(
-             thisSymbolDataframe$Date > settings.sma.smaFromTo[1] &
-               thisSymbolDataframe$Date < settings.sma.smaFromTo[2]
+             thisSymbolDataframe$Date >= fromTo[1] &
+               thisSymbolDataframe$Date <= fromTo[2]
            )
            
            if (length(filteredDf) == 0) {
              return()
            }
            
-           dfLength = length(filteredDf) + max(settings.sma.smaMinMaxHigh)
-           df = tail(thisSymbolDataframe[thisSymbolDataframe$Date < settings.sma.smaFromTo[2], ], dfLength)
+           dfLength = length(filteredDf) + max(smaMinMaxHigh)
+           df = tail(thisSymbolDataframe[thisSymbolDataframe$Date <= fromTo[2], ], dfLength)
            bg = getSMAGainDf(
              df,
-             settings.sma.smaMinMaxLow,
-             settings.sma.smaMinMaxHigh,
+             smaMinMaxLow,
+             smaMinMaxHigh,
              F,
              firstPublishSuplyDay
            )
@@ -125,7 +126,7 @@ MovingAverageCalculation = function() {
           append = TRUE
         )
         
-        calculationTableData = dbReadTable(con, calculationTableId)
+        #calculationTableData = dbReadTable(con, calculationTableId)
         
       }, error = function(e) {
         source("Util/Logger.R")
@@ -141,7 +142,7 @@ MovingAverageCalculation = function() {
     stopImplicitCluster()
   }
   
-  timeOfExecution(CalculateBestMovingAverageForAllCompany)
+  timeOfExecution(CalculateBestMovingAverageForAllCompany, fromTo, smaMinMaxLow, smaMinMaxHigh, calDescription)
   
   
   # getCompanyDataFrame(index) {

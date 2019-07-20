@@ -2,6 +2,10 @@
 #مربوط به محاسبات کلی#
 ####################
 
+#کامنت در جدول تاریخ
+settings.calDescription = 'CompanyExtraData-Test'
+#پکیج های مورد نیاز
+settings.usedPackage = c("foreach", "doParallel", "DBI", "odbc", "log4r","dplyr", "plotly")
 #درصد محاسبه کارمزد که احتمالا ۱.۴۶ درصد صحیح تر است
 settings.wageRate = 1.5
 #پس از بدست آوردن بهترین معاملات، آنهایی که بیشتر از این مقدار معامله دارند، صرف نظر شود
@@ -13,20 +17,18 @@ settings.maxTradeNo = 10
 #######################
 
 #از تاریخ تا تاریخ (برای محاسبه میانگین متحرک ها در یک بازه تاریخی)
-settings.sma.smaFromTo = c('2017-03-21', '2019-03-21')
+settings.sma.fromTo = c('2017-03-21', '2019-03-21')
 #بردار میانگین متحرک کوتاه مدت
 settings.sma.smaMinMaxLow = 1:200
 #بردار میانگین متحرک بلند مدت
 settings.sma.smaMinMaxHigh = 1:200
-#کامنت در جدول تاریخ
-settings.calDescription = 'SMA-1:200-1:200'
 
 ################
 #مربوط به گین کلی#
 ################
 
 #از تاریخ تا تاریخ
-settings.totalGain.totalGainFromTo = c('2017-03-21', '2019-03-21')
+settings.totalGain.fromTo = c('2017-03-21', '2019-03-21')
 
 ################
 #مربوط به شرکت ها#
@@ -43,12 +45,11 @@ settings.company.volumeThreshold = c(10 ^ 8, 10 ^ 9, 10 ^ 10, 10 ^ 11)
 settings.company.volumeCoefficient = 5
 settings.company.volumePeriodTime = 60
 
+#از تاریخ تا تاریخ
+settings.company.fromTo = c('2017-03-21', '2019-03-21')
+
 ################
 # مسیرها
 ################
 # مسیر پکیج ها
 settings.packagePath = "C:/Program Files/R/R-3.6.1/library"
-
-#پکیج های مورد نیاز
-settings.usedPackage = c("foreach", "doParallel", "DBI", "odbc", "log4r","dplyr", "plotly")
-
