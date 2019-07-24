@@ -30,6 +30,7 @@ sourceFile = function() {
   
   source("TotalGain/CalculateGain.R")
   source("TotalGain/GetTotalGainDf.R")
+  source('TotalGain/CalculateGainForAllSymbol.R')
   
   source("Util/TimeOfExecution.R")
 

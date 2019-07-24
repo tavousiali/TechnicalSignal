@@ -3,21 +3,21 @@
 ####################
 
 #کامنت در جدول تاریخ
-settings.calDescription = 'CompanyExtraData-Test'
+settings.calDescription = 'SMA-1:200-From:81-To:96'
 #پکیج های مورد نیاز
 settings.usedPackage = c("foreach", "doParallel", "DBI", "odbc", "log4r","dplyr", "plotly")
 #درصد محاسبه کارمزد که احتمالا ۱.۴۶ درصد صحیح تر است
 settings.wageRate = 1.5
 #پس از بدست آوردن بهترین معاملات، آنهایی که بیشتر از این مقدار معامله دارند، صرف نظر شود
 #قاعدتا کاربر علاقه دارد، تا با یک تعداد معامله محدود، بهترین گین را بدست بیاورد
-settings.maxTradeNo = 10
+settings.maxTradeNo = 1000
 
 #######################
 #مربوط به میانگین متحرک ها#
 #######################
 
 #از تاریخ تا تاریخ (برای محاسبه میانگین متحرک ها در یک بازه تاریخی)
-settings.sma.fromTo = c('2017-03-21', '2019-03-21')
+settings.sma.fromTo = c('2001-03-21', '2017-03-21')
 #بردار میانگین متحرک کوتاه مدت
 settings.sma.smaMinMaxLow = 1:200
 #بردار میانگین متحرک بلند مدت

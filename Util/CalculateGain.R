@@ -1,5 +1,5 @@
 source("Settings.R")
-calculateGain = function(df) {
+calculateGainSMA = function(df) {
   #browser()
   gain = 0
   gainPercent = 0

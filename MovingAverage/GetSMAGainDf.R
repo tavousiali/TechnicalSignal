@@ -60,7 +60,7 @@ getSMAGainDf = function(df,
         result = result[result$positiveSignal != c(F, head(result$positiveSignal,-1)), ]
         
         tryCatch({
-          gainResult = calculateGain(result)
+          gainResult = calculateGainSMA(result)
           dfGain = rbind(dfGain,
                          c(i,
                            j,
